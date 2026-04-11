@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mini Twitter App</title>
+</head>
+<body>
+
+<h2>Post Tweet</h2>
+<input type="text" id="tweet" placeholder="Enter tweet">
+<button onclick="postTweet()">Post</button>
+
+<h2>Upload Audio</h2>
+<input type="file" id="audio">
+<button onclick="uploadAudio()">Upload</button>
+
+<h2>Forgot Password</h2>
+<input type="email" id="email" placeholder="Enter email">
+<button onclick="forgotPassword()">Reset Password</button>
+
+<h2>Subscribe</h2>
+<select id="plan">
+  <option>Free</option>
+  <option>Bronze</option>
+  <option>Silver</option>
+  <option>Gold</option>
+</select>
+<button onclick="subscribe()">Subscribe</button>
+
+<h2>Change Language</h2>
+<select id="lang">
+  <option>English</option>
+  <option>Spanish</option>
+  <option>Hindi</option>
+  <option>Portuguese</option>
+  <option>Chinese</option>
+  <option>French</option>
+</select>
+<button onclick="changeLanguage()">Change</button>
+
+<h2>Login</h2>
+<input type="email" id="loginEmail" placeholder="Enter email">
+<button onclick="login()">Login</button>
+
+<script>
+
+// Request notification permission
+Notification.requestPermission();
+
+// ================= POST TWEET =================
+async function postTweet(){
+  const content = document.getElementById("tweet").value;
+
+  const res = await fetch("http://localhost:5000/tweet", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ userId: "1", content })
+  });
+
+  const data = await res.json();
+
+  if(data.notify){
+    new Notification("Important Tweet", {
+      body: content
+    });
+  }
+
+  alert(data.message);
+}
+
+// ================= AUDIO UPLOAD =================
+async function uploadAudio(){
+  const file = document.getElementById("audio").files[0];
+
+  const formData = new FormData();
+  formData.append("audio", file);
+
+  const res = await fetch("http://localhost:5000/upload-audio", {
+    method: "POST",
+    body: formData
+  });
+
+  const text = await res.text();
+  alert(text);
+}
+
+// ================= FORGOT PASSWORD =================
+async function forgotPassword(){
+  const email = document.getElementById("email").value;
+
+  const res = await fetch("http://localhost:5000/forgot-password", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ email })
+  });
+
+  const text = await res.text();
+  alert(text);
+}
+
+// ================= SUBSCRIBE =================
+async function subscribe(){
+  const email = document.getElementById("email").value;
+  const plan = document.getElementById("plan").value;
+
+  const res = await fetch("http://localhost:5000/subscribe", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ email, plan })
+  });
+
+  const text = await res.text();
+  alert(text);
+}
+
+// ================= LANGUAGE =================
+async function changeLanguage(){
+  const email = document.getElementById("email").value;
+  const language = document.getElementById("lang").value;
+
+  const res = await fetch("http://localhost:5000/change-language", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ email, language })
+  });
+
+  const text = await res.text();
+  alert(text);
+}
+
+// ================= LOGIN =================
+async function login(){
+  const email = document.getElementById("loginEmail").value;
+
+  const res = await fetch("http://localhost:5000/login", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ email })
+  });
+
+  const text = await res.text();
+  alert(text);
+}
+
+</script>
+
+</body>
+</html>
